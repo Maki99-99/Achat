@@ -1,93 +1,132 @@
-# projet-devops
+# Achat — Projet DevOps
 
+[![CI](https://github.com/Maki99-99/Achat/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Maki99-99/Achat/actions/workflows/ci.yml)
 
+Application de gestion des achats développée avec Spring Boot dans le cadre du module DevOps. Le projet est organisé en branches Git par module fonctionnel, puis intégré dans la branche `main`.
 
-## Getting started
+## Fonctionnalités
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+| Module | Branche | Routes de base |
+|---|---|---|
+| Produits et catégories | `feature/produit` | `/produit`, `/categorieProduit` |
+| Fournisseurs et secteurs d'activité | `feature/fournisseur` | `/fournisseur`, `/secteurActivite` |
+| Factures et détails de facture | `feature/facture` | `/facture` |
+| Règlements | `feature/reglement` | `/reglement` |
+| Stock | `feature/stock` | `/stock` |
+| Opérateurs | `feature/operateur` | `/operateur` |
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Stack technique
 
-## Add your files
+| Composant | Technologie |
+|---|---|
+| Langage | Java 8 |
+| Framework | Spring Boot 2.5.3 (Web, Data JPA) |
+| Build | Maven (wrapper inclus) |
+| Base de données | MySQL / Hibernate |
+| Documentation API | Springfox (Swagger) 3.0.0 |
+| Boilerplate | Lombok |
+| Tests | JUnit 5, H2 (en mémoire) |
+| CI | GitHub Actions |
 
-* [Create](https://docs.gitlab.com/user/project/repository/web_editor/#create-a-file) or [upload](https://docs.gitlab.com/user/project/repository/web_editor/#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+## Prérequis
+
+- JDK 8
+- MySQL 5.7 ou 8
+- Aucune installation de Maven n'est nécessaire : le wrapper `./mvnw` est fourni.
+
+## Configuration de la base de données
+
+1. Créer la base :
+
+```sql
+CREATE DATABASE achatdb;
+```
+
+2. Renseigner les identifiants MySQL dans `src/main/resources/application.properties` :
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/achatdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+spring.datasource.username=<utilisateur>
+spring.datasource.password=<mot_de_passe>
+```
+
+Le schéma est mis à jour automatiquement au démarrage (`spring.jpa.hibernate.ddl-auto=update`).
+
+## Lancer l'application
+
+Linux / macOS :
+
+```bash
+./mvnw spring-boot:run
+```
+
+Windows :
+
+```bash
+mvnw.cmd spring-boot:run
+```
+
+Une fois démarrée :
+
+- API : http://localhost:8089/SpringMVC
+- Swagger UI : http://localhost:8089/SpringMVC/swagger-ui/
+- Spécification OpenAPI : http://localhost:8089/SpringMVC/v3/api-docs
+
+La configuration Swagger se trouve dans `src/main/java/tn/esprit/rh/achat/util/SpringFoxSwaggerConfig.java`.
+
+## Tests
+
+```bash
+./mvnw test
+```
+
+Les tests utilisent une base H2 en mémoire (`src/test/resources/application.properties`) : aucune instance MySQL n'est nécessaire.
+
+## Intégration continue
+
+Le workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) s'exécute :
+
+- à chaque push sur `main` et sur les branches `feature/**` ;
+- à chaque pull request vers `main`.
+
+Il utilise Java 8 (Temurin), le cache Maven et lance `./mvnw -B clean verify`.
+
+## Structure du projet
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/nawres-ing/projet-devops.git
-git branch -M main
-git push -uf origin main
+src/
+├── main/
+│   ├── java/tn/esprit/rh/achat/
+│   │   ├── controllers/     # API REST
+│   │   ├── entities/        # Entités JPA
+│   │   ├── repositories/    # Repositories Spring Data
+│   │   ├── services/        # Interfaces et implémentations
+│   │   └── util/            # Configuration Swagger
+│   └── resources/
+│       └── application.properties
+└── test/
+    ├── java/tn/esprit/rh/achat/AchatApplicationTests.java
+    └── resources/application.properties
 ```
 
-## Integrate with your tools
+## Organisation des branches
 
-* [Set up project integrations](https://gitlab.com/nawres-ing/projet-devops/-/settings/integrations)
+| Branche | Contenu |
+|---|---|
+| `main` | Version intégrée du projet (tous les modules, CI et tests) |
+| `feature/produit` | Produits et catégories |
+| `feature/fournisseur` | Fournisseurs et secteurs d'activité |
+| `feature/facture` | Factures et détails de facture |
+| `feature/reglement` | Règlements |
+| `feature/stock` | Stock |
+| `feature/operateur` | Opérateurs |
+| `feature/github-actions` | Workflow GitHub Actions |
+| `feature/tests-integration` | Tests d'intégration avec H2 |
 
-## Collaborate with your team
+Chaque branche de module ne contient que les classes de son module ; elle est ensuite fusionnée dans `main`.
 
-* [Invite team members and collaborators](https://docs.gitlab.com/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/user/project/merge_requests/creating_merge_requests/)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/user/project/issues/managing_issues/#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+## Auteur
 
-## Test and Deploy
+**Maki99-99** — [github.com/Maki99-99](https://github.com/Maki99-99)
 
-Use the built-in continuous integration in GitLab.
-
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/topics/autodevops/requirements/)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ci/environments/protected_environments/)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Dépôt : [github.com/Maki99-99/Achat](https://github.com/Maki99-99/Achat)
